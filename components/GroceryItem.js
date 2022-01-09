@@ -1,10 +1,12 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-const GroceryItem = ({ title }) => {
+const GroceryItem = ({ title, onDelete, id }) => {
   return (
-    <View>
-      <Text style={styles.listItem}>{title}</Text>
-    </View>
+    <TouchableOpacity activeOpacity={0.8} onLongPress={onDelete.bind(null, id)}>
+      <View>
+        <Text style={styles.listItem}>{title}</Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 export default GroceryItem;

@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import {
   StyleSheet,
-  TextInput,
-  Text,
   View,
-  Pressable,
   TouchableWithoutFeedback,
   Keyboard,
   FlatList,
@@ -19,14 +16,9 @@ const DismissKeyboard = ({ children }) => (
 );
 
 const App = () => {
-  const [enteredGrocery, setEnteredGrocery] = useState('');
   const [groceries, setGroceries] = useState([]);
 
-  const groceryInputHandler = enteredText => {
-    setEnteredGrocery(enteredText);
-  };
-
-  const addGroceryHandler = () => {
+  const addGroceryHandler = (enteredGrocery, setEnteredGrocery) => {
     if (!!enteredGrocery.trim())
       setGroceries(prevState => [
         ...prevState,
@@ -35,18 +27,25 @@ const App = () => {
     setEnteredGrocery('');
   };
 
+  const deleteGroceryHandler = id => {
+    setGroceries(prevState => prevState.filter(grocery => grocery.id !== id));
+  };
+
   return (
     <DismissKeyboard>
       <View style={styles.screen}>
-        <GroceryInput
-          groceryInputHandler={groceryInputHandler}
-          addGroceryHandler={addGroceryHandler}
-          enteredGrocery={enteredGrocery}
-        />
+        <GroceryInput onAddGrocery={addGroceryHandler} />
         <FlatList
           keyExtractor={(item, i) => item.id}
           data={groceries}
-          renderItem={itemData => <GroceryItem title={itemData.item.value} />}
+          renderItem={itemData => (
+            <GroceryItem
+              onPress={null}
+              onDelete={deleteGroceryHandler}
+              title={itemData.item.value}
+              id={itemData.item.id}
+            />
+          )}
         />
       </View>
     </DismissKeyboard>

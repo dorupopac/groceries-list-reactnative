@@ -1,10 +1,13 @@
+import { useState } from 'react';
 import { View, Text, Pressable, TextInput, StyleSheet } from 'react-native';
 
-const GroceryInput = ({
-  groceryInputHandler,
-  addGroceryHandler,
-  enteredGrocery,
-}) => {
+const GroceryInput = ({ onAddGrocery }) => {
+  const [enteredGrocery, setEnteredGrocery] = useState('');
+
+  const groceryInputHandler = enteredText => {
+    setEnteredGrocery(enteredText);
+  };
+
   return (
     <View style={styles.inputContainer}>
       <TextInput
@@ -13,7 +16,10 @@ const GroceryInput = ({
         onChangeText={groceryInputHandler}
         value={enteredGrocery}
       />
-      <Pressable style={styles.button} onPress={addGroceryHandler}>
+      <Pressable
+        style={styles.button}
+        onPress={onAddGrocery.bind(null, enteredGrocery, setEnteredGrocery)}
+      >
         <Text style={styles.buttonText}>ADD</Text>
       </Pressable>
     </View>
