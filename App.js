@@ -1,40 +1,39 @@
 import { useState } from 'react';
-import {
-  StyleSheet,
-  View,
-  TouchableWithoutFeedback,
-  Keyboard,
-  FlatList,
-} from 'react-native';
+import { StyleSheet, View, Button, FlatList } from 'react-native';
 import GroceryItem from './components/GroceryItem';
 import GroceryInput from './components/GroceryInput';
 
-const DismissKeyboard = ({ children }) => (
-  <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-    {children}
-  </TouchableWithoutFeedback>
-);
-
 const App = () => {
   const [groceries, setGroceries] = useState([]);
+  const [isAddMode, setIsAddMode] = useState(false);
 
   const addGroceryHandler = (enteredGrocery, setEnteredGrocery) => {
-    if (!!enteredGrocery.trim())
-      setGroceries(prevState => [
-        ...prevState,
-        { id: Math.random().toString(), value: enteredGrocery },
-      ]);
+    if (!enteredGrocery.trim()) return;
+    setGroceries(prevState => [
+      ...prevState,
+      { id: Math.random().toString(), value: enteredGrocery },
+    ]);
     setEnteredGrocery('');
+    setIsAddMode(false);
   };
 
   const deleteGroceryHandler = id => {
     setGroceries(prevState => prevState.filter(grocery => grocery.id !== id));
   };
 
+  const closeModalHandler = () => {
+    setIsAddMode(false);
+  };
+
   return (
-    <DismissKeyboard>
-      <View style={styles.screen}>
-        <GroceryInput onAddGrocery={addGroceryHandler} />
+    <View style={styles.main}>
+      <View style={styles.wrapper}>
+        <Button title="Add New Grocery" onPress={() => setIsAddMode(true)} />
+        <GroceryInput
+          visible={isAddMode}
+          onAddGrocery={addGroceryHandler}
+          onClose={closeModalHandler}
+        />
         <FlatList
           keyExtractor={(item, i) => item.id}
           data={groceries}
@@ -48,14 +47,17 @@ const App = () => {
           )}
         />
       </View>
-    </DismissKeyboard>
+    </View>
   );
 };
 export default App;
 
 const styles = StyleSheet.create({
-  screen: {
+  main: {
     height: '100%',
+    width: '100%',
+  },
+  wrapper: {
     marginHorizontal: 30,
     marginTop: 70,
   },
